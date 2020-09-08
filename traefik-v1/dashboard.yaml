@@ -1,0 +1,16 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard-tls
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`dashboard.demo.containous.tech`)
+      services:
+        - name: api@internal
+          kind: TraefikService
+  tls:
+    certResolver: myresolver

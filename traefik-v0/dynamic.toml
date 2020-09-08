@@ -1,0 +1,27 @@
+[http.routers]
+  [http.routers.whoami]
+    rule = "Host(`whoami.docker.localhost`)"
+    service = "whoami-svc"
+    middlewares = ["rewrite-request", "test-header"]
+
+[http.services]
+  [http.services.whoami-svc]
+    [[http.services.whoami-svc.loadBalancer.servers]]
+        url = "http://127.0.0.1:8081"
+    [[http.services.whoami-svc.loadBalancer.servers]]
+        url = "http://127.0.0.1:8082"
+    [[http.services.whoami-svc.loadBalancer.servers]]
+        url = "http://127.0.0.1:8083"
+
+
+[http.middlewares]
+  [http.middlewares.test-header.headers.customRequestHeaders]
+        X-Custom-Request-Name = "request"
+    [http.middlewares.test-header.headers.customResponseHeaders]
+        X-Custom-Response-Header = "response"
+
+  [http.middlewares.rewrite-request.plugin.rewritebody]
+    lastModified = true
+    [[http.middlewares.rewrite-request.plugin.rewritebody.rewrites]]
+      regex = "(r|R)equest"
+      replacement = "powpow"
